@@ -13,43 +13,37 @@ public class Catch {
 	static int EOP = 45; //more placeholders
 	
 	Sequencer seq;
+	ServerSocket server;
+	Socket s;
+	BufferedReader r;
+	
+	public Catch() {
+		try {
+			seq = MidiSystem.getSequencer();
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void readIn() {
+		
+	}
 	
 	public static void main(String[] args) {
-
-		try { 
-			ServerSocket server = new ServerSocket(1337);
-			Socket s = server.accept();
-			BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			//integer by integer is just a placeholder, eventually figure out number of bytes in a packet
-			int c;
-			while((c = r.read()) != EOS) {
-				for(int i = 0; i < 4; i++) {
-					switch(i) {
-					case 0:
-						break;
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					}
-				}
-			}
-			
-		} catch(IOException e) {
-			
-		}
+        
 	}
 	
 	
 	
 	
 	
-	
 	public MidiEvent convertToMsg(RustPacket pkt) {
-		MidiEvent ret = new MidiEvent(new ShortMessage(), 0); //change this
-		return ret;
+		ShortMessage msg = new ShortMessage();
+		//edit message
+		MidiEvent evt = new MidiEvent(msg, pkt.startTime);
+		return evt;
 	}
 	
 
