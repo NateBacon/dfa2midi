@@ -10,7 +10,7 @@ import java.net.Socket;
 import javax.sound.midi.*;
 
 public class Catch {
-	static int HANDSHAKE = 0x00; //this is a placeholder
+	static int HANDSHAKE = 50; //this is a placeholder
 	static int EOF = 0xFF; //more placeholders
 	
 	Sequencer seq;
@@ -45,10 +45,13 @@ public class Catch {
 	
 	public void readIn() throws IOException, InvalidMidiDataException {
 		
-		
-		while(r.read() != HANDSHAKE) { // block until we get the handshake from rust
+		int i = r.read();
+		System.out.println(i);
+		while(i != HANDSHAKE) { // block until we get the handshake from rust
+			i = r.read();
 			continue;
 		}
+		System.out.println("We made it");
 		
 		char[] buff = new char[4];
 		//add metadata to sequence
@@ -56,7 +59,7 @@ public class Catch {
 			RustPacket pkt = RustPacket.convert(buff);
 			convertToMsg(pkt);
 		} 
-		
+		System.out.println("Do we get here?");
 	}
 	
 	public void writeToFile() throws InvalidMidiDataException, IOException {
@@ -73,10 +76,6 @@ public class Catch {
         new Catch();
 	}
 	
-	
-	
-	
-	
 	public void convertToMsg(RustPacket pkt) throws InvalidMidiDataException {
 		ShortMessage msgOn = new ShortMessage();
 		msgOn.setMessage(ShortMessage.NOTE_ON, pkt.pitch, pkt.velocity);
@@ -84,7 +83,7 @@ public class Catch {
 		t.add(evtOn);
 		
 		ShortMessage msgOff = new ShortMessage();
-		msgOff.setMessage(ShortMessage.NOTE_OFF);
+		msgOff.setMessage(ShortMessage.NOTE_OFF, pkt.pitch, pkt.velocity);
 		MidiEvent evtOff = new MidiEvent(msgOff, pkt.startTime + pkt.duration);
 		t.add(evtOff);
 	}
