@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Catch {
+public class MidiServer {
     static int HANDSHAKE = 50; //this is a placeholder
     static int EOF = 0xFF; //more placeholders
 
@@ -16,7 +16,7 @@ public class Catch {
     private Track track;
     private File file;
 
-    private Catch(String filename) {
+    private MidiServer(String filename) {
        file = new File(filename);
     }
 
@@ -64,7 +64,7 @@ public class Catch {
     }
 
     public static void main(String[] args) {
-        new Catch("test.mid").run();
+        new MidiServer("test.mid").run();
     }
 
     private void convertToMsg(RustPacket pkt) throws InvalidMidiDataException {
