@@ -7,10 +7,9 @@ public class DummyClient {
         try {
             Socket socket = new Socket("localhost", 1337);
             PrintWriter w = new PrintWriter(socket.getOutputStream());
-            System.out.println("Printing 50...");
-            char c = 50;
-            w.print(c);
-            w.flush();
+            System.out.println("Sending data...");
+
+            // Send MIDI data
             char[] s = new char[4];
             s[0] = 60;
             s[1] = 96;
@@ -18,8 +17,16 @@ public class DummyClient {
             s[3] = 20;
             w.print(s);
             w.flush();
+
+            // Send EOF
+            char c = 0xFF;
+            w.print(c);
+            w.flush();
+
+            // Close
             w.close();
             socket.close();
+            System.out.println("Finished");
         }
         catch(IOException e) {
             e.printStackTrace();
