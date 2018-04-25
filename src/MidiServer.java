@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MidiServer {
-    private static int EOF = 0xFF; // placeholder
+    private static char EOF = 0xFF; // placeholder
 
     private Sequencer sequencer;
     private BufferedReader reader;
@@ -41,7 +41,9 @@ public class MidiServer {
             ServerSocket server = new ServerSocket(1337);
 
             // Wait for a client
+            System.out.println("Server started, waiting for client...");
             Socket socket = server.accept();
+            System.out.println("Client connected.");
 
             // Setup the reader and track for data transfer
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -69,10 +71,14 @@ public class MidiServer {
         char[] buff = new char[4];
 
         // Add metadata to sequence
-        while(reader.read(buff) != EOF)
-            convertToMsg(RustPacket.convert(buff));
+        while(reader.read(buff) != -1) {
+            if(buff[0] == EOF)
+                break;
 
-        System.out.println("Client send EOF");
+            convertToMsg(RustPacket.convert(buff));
+        }
+
+        System.out.println("Client sent EOF");
     }
 
     /**
