@@ -16,9 +16,12 @@ public class Catch {
     private Track track;
     private File file;
 
-    private Catch() {
+    private Catch(String filename) {
+       file = new File(filename);
+    }
+
+    private void run() {
         try {
-            file = new File("test.mid");
             sequencer = MidiSystem.getSequencer();
             sequence = new Sequence(Sequence.PPQ, 4);
             ServerSocket server = new ServerSocket(1337);
@@ -33,7 +36,6 @@ public class Catch {
             e.printStackTrace();
         }
     }
-
 
     private void readIn() throws IOException, InvalidMidiDataException {
         int i = reader.read();
@@ -62,7 +64,7 @@ public class Catch {
     }
 
     public static void main(String[] args) {
-        new Catch();
+        new Catch("test.mid").run();
     }
 
     private void convertToMsg(RustPacket pkt) throws InvalidMidiDataException {
