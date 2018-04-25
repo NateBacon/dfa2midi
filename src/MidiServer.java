@@ -1,16 +1,15 @@
 import javax.sound.midi.*;
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MidiServer {
-    private static char EOF = 0xFF; // placeholder
+    private static byte EOF = (byte) 0xFF;
 
     private Sequencer sequencer;
-    private BufferedReader reader;
+    private BufferedInputStream reader;
     private Sequence sequence;
     private Track track;
     private File file;
@@ -46,7 +45,7 @@ public class MidiServer {
             System.out.println("Client connected.");
 
             // Setup the reader and track for data transfer
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            reader = new BufferedInputStream(socket.getInputStream());
             track = sequence.createTrack();
 
             // Transfer data
@@ -68,7 +67,7 @@ public class MidiServer {
      * @throws InvalidMidiDataException If the client gives invalid MIDI data
      */
     private void readIn() throws IOException, InvalidMidiDataException {
-        char[] buff = new char[4];
+        byte[] buff = new byte[4];
 
         // Add metadata to sequence
         while(reader.read(buff) != -1) {

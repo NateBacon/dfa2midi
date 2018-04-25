@@ -1,26 +1,26 @@
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class DummyClient {
     public static void main(String[] args) {
         try {
             Socket socket = new Socket("localhost", 1337);
-            PrintWriter w = new PrintWriter(socket.getOutputStream());
+            OutputStream w = socket.getOutputStream();
             System.out.println("Sending data...");
 
             // Send MIDI data
-            char[] s = new char[4];
+            byte[] s = new byte[4];
             s[0] = 60;
             s[1] = 96;
             s[2] = 1;
             s[3] = 20;
-            w.print(s);
+            w.write(s);
             w.flush();
 
             // Send EOF
-            char c = 0xFF;
-            w.print(c);
+            byte c = (byte) 0xFF;
+            w.write(c);
             w.flush();
 
             // Close

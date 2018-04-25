@@ -17,7 +17,7 @@ class RustPacket {
      * @param buffer the raw data
      * @return the parsed {@link RustPacket}
      */
-    static RustPacket convert(char[] buffer) {
+    static RustPacket convert(byte[] buffer) {
         return new RustPacket(buffer[0], buffer[1], buffer[2], buffer[3]);
     }
 }
