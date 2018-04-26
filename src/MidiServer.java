@@ -1,5 +1,5 @@
 import javax.sound.midi.*;
-import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +9,7 @@ public class MidiServer {
     private static byte EOF = (byte) 0xFF;
 
     private Sequencer sequencer;
-    private BufferedInputStream reader;
+    private DataInputStream reader;
     private Sequence sequence;
     private Track track;
     private File file;
@@ -45,7 +45,7 @@ public class MidiServer {
             System.out.println("Client connected.");
 
             // Setup the reader and track for data transfer
-            reader = new BufferedInputStream(socket.getInputStream());
+            reader = new DataInputStream(socket.getInputStream());
             track = sequence.createTrack();
 
             // Transfer data
@@ -67,14 +67,20 @@ public class MidiServer {
      * @throws InvalidMidiDataException If the client gives invalid MIDI data
      */
     private void readIn() throws IOException, InvalidMidiDataException {
-        byte[] buff = new byte[4];
+        byte pitch, velocity, duration;
+        long startTime;
 
-        // Add metadata to sequence
-        while(reader.read(buff) != -1) {
-            if(buff[0] == EOF)
+        while(true) {
+            pitch = reader.readByte();
+
+            if(pitch == EOF)
                 break;
 
-            convertToMsg(RustPacket.convert(buff));
+            velocity = reader.readByte();
+            duration = reader.readByte();
+            startTime = reader.readLong();
+
+            convertToMsg(new RustPacket(pitch, velocity, duration, startTime));
         }
 
         System.out.println("Client sent EOF");
@@ -108,6 +114,7 @@ public class MidiServer {
      * @throws InvalidMidiDataException If the MIDI data is invalid
      */
     private void convertToMsg(RustPacket pkt) throws InvalidMidiDataException {
+        System.out.println("Adding note " + pkt.pitch + " at time " + pkt.startTime + " for duration " + pkt.duration);
         // Add the NOTE_ON message
         ShortMessage msgOn = new ShortMessage();
         msgOn.setMessage(ShortMessage.NOTE_ON, pkt.pitch, pkt.velocity);
