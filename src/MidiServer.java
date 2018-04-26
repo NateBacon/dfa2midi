@@ -114,7 +114,6 @@ public class MidiServer {
      * @throws InvalidMidiDataException If the MIDI data is invalid
      */
     private void convertToMsg(RustPacket pkt) throws InvalidMidiDataException {
-        System.out.println("Adding note " + pkt.pitch + " at time " + pkt.startTime + " for duration " + pkt.duration);
         // Add the NOTE_ON message
         ShortMessage msgOn = new ShortMessage();
         msgOn.setMessage(ShortMessage.NOTE_ON, pkt.pitch, pkt.velocity);
