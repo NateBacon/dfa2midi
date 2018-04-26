@@ -102,6 +102,7 @@ public class MidiServer {
      * @throws MidiUnavailableException If the MIDI device could not be opened
      */
     private void play() throws InvalidMidiDataException, MidiUnavailableException {
+        System.out.println("Playing the transferred MIDI");
         sequencer.setSequence(sequence);
         sequencer.open();
         sequencer.start();
